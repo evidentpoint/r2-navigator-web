@@ -5,6 +5,7 @@ import { SpineItemView } from './spine-item-view';
 import { CancellationToken } from './types';
 
 type VisiblePagesReadyCallbackType = (cv: IContentView) => void;
+type PrefetchReadyCallbackType = () => void;
 
 export enum ScrollMode {
   None,
@@ -37,6 +38,7 @@ export class Viewport {
   private scrollFromInternal: boolean = false;
 
   private visiblePagesReadyCallbacks: VisiblePagesReadyCallbackType[] = [];
+  private prefetchReadyCallbacks: PrefetchReadyCallbackType[] = [];
 
   private locationChangedCallbacks: Function[] = [];
 
@@ -359,6 +361,10 @@ export class Viewport {
     this.visiblePagesReadyCallbacks.push(callback);
   }
 
+  public onPrefetchReady(callback: () => void): void {
+    this.prefetchReadyCallbacks.push(callback);
+  }
+
   public getViewScale(siIndex: number): number {
     const view = this.bookView.getSpineItemView(siIndex);
     if (!view) {
@@ -455,6 +461,10 @@ export class Viewport {
 
     if (this.scrollMode === ScrollMode.SpineItem) {
       this.showOnlyCurrentSpineItemRange();
+    }
+
+    for (const callback of this.prefetchReadyCallbacks) {
+      callback();
     }
   }
 
