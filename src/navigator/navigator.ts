@@ -123,7 +123,7 @@ export class Navigator {
     }
 
     return (
-      pos.spineItemIndex + 1 >= this.pub.spine.length && pos.pageIndex + 1 >= pos.spineItemPageCount
+      pos.spineItemIndex + 1 >= this.pub.spine.length && pos.pageIndex >= pos.spineItemPageCount
     );
   }
 
