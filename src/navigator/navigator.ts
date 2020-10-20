@@ -142,7 +142,7 @@ export class Navigator {
       return false;
     }
 
-    return pos.pageIndex + 1 === pos.spineItemPageCount;
+    return pos.pageIndex === pos.spineItemPageCount;
   }
 
   public getScreenCountSpine(): number {
