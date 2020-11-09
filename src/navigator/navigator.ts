@@ -122,9 +122,14 @@ export class Navigator {
       return false;
     }
 
-    return (
-      pos.spineItemIndex + 1 >= this.pub.spine.length && pos.pageIndex >= pos.spineItemPageCount
-    );
+    const isLastSpineItem = pos.spineItemIndex + 1 >= this.pub.spine.length;
+    if (pos.view.fixedLayout() === true) {
+      return isLastSpineItem;
+    } else {
+      return (
+          isLastSpineItem && pos.pageIndex >= pos.spineItemPageCount
+      );
+    }
   }
 
   public isFirstScreenSpine(): boolean {
@@ -141,8 +146,12 @@ export class Navigator {
     if (!pos) {
       return false;
     }
-
-    return pos.pageIndex === pos.spineItemPageCount;
+    
+    if (pos.view.fixedLayout() === true) {
+      return true;
+    } else {
+      return pos.pageIndex === pos.spineItemPageCount;
+    }
   }
 
   public getScreenCountSpine(): number {
