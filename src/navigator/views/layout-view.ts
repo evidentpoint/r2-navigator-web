@@ -395,18 +395,17 @@ export class LayoutView extends View {
 
     this.updatePaginatedRange();
 
-    while (end > this.getLoadedEndPosition() && this.hasMoreAfterEnd()) {
+    while ((end > this.getLoadedEndPosition() && this.hasMoreAfterEnd()) || (start < this.getLoadedStartPostion() && this.hasMoreBeforeStart())) {
       if (token && token.isCancelled) {
         break;
       }
-      await this.loadNewSpineItemAtEnd(token);
-    }
-
-    while (start < this.getLoadedStartPostion() && this.hasMoreBeforeStart()) {
-      if (token && token.isCancelled) {
-        break;
+      if(end > this.getLoadedEndPosition() && this.hasMoreAfterEnd() && start < this.getLoadedStartPostion() && this.hasMoreBeforeStart()){
+        await Promise.all([this.loadNewSpineItemAtEnd(token), this.loadNewSpineItemAtStart(token)]);
+      } else if (end > this.getLoadedEndPosition() && this.hasMoreAfterEnd()){
+        await this.loadNewSpineItemAtEnd(token);
+      } else if (start < this.getLoadedStartPostion() && this.hasMoreBeforeStart()){
+        await this.loadNewSpineItemAtStart(token);
       }
-      await this.loadNewSpineItemAtStart(token);
     }
 
     this.updatePaginatedRange();
